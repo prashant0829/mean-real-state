@@ -1,4 +1,17 @@
 import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+mongoose
+  .connect(process.env.MONGOURI)
+  .then(() => {
+    console.log("Connected to Database");
+  })
+  .catch((e) => {
+    console.log("Data not connected", e);
+  });
 
 const expressApp = express();
 
