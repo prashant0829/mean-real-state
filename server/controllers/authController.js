@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 
-const signUp = async (req, res) => {
+const signUp = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
@@ -22,8 +22,8 @@ const signUp = async (req, res) => {
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log(error);
+    next(error);
   }
 };
 
