@@ -10,6 +10,14 @@ const signUp = async (req, res, next) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
+    // Check if the username or email already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      const error = new Error("User or email already exists");
+      error.status = 400;
+      throw error;
+    }
+
     // Password hashing with bcrypt
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -22,7 +30,7 @@ const signUp = async (req, res, next) => {
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     next(error);
   }
 };
