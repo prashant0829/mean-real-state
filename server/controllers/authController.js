@@ -1,5 +1,22 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const { errorHandler } = require("../errorHandler");
+
+const saltRounds = 10;
+
+const getJwtSecret = () => {
+  return process.env.JWT_SECRET;
+};
+const generateToken = (userId) => {
+  return jwt.sign({ id: userId }, getJwtSecret());
+};
+
+const handleExistingUser = () => {
+  const error = new Error("User or email already exists");
+  error.status = 400;
+  throw error;
+};
 
 const signUp = async (req, res, next) => {
   try {
@@ -13,13 +30,10 @@ const signUp = async (req, res, next) => {
     // Check if the username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      const error = new Error("User or email already exists");
-      error.status = 400;
-      throw error;
+      handleExistingUser();
     }
 
     // Password hashing with bcrypt
-    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create a new user with hashed password
@@ -35,6 +49,32 @@ const signUp = async (req, res, next) => {
   }
 };
 
+const signIn = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser || !bcrypt.compareSync(password, existingUser.password)) {
+      handleExistingUser();
+    }
+
+    const token = generateToken(existingUser._id);
+
+    const { password: userPassword, ...userDetails } = existingUser._doc;
+
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60),
+      })
+      .status(200)
+      .json(userDetails);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signUp,
+  signIn,
 };
