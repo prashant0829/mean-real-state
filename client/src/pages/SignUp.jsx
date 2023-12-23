@@ -86,7 +86,6 @@ const Signup = () => {
                 onChange={handleChange}
                 className="mt-1 p-2 w-full border rounded-md"
               />
-              <span id="username-error-box"></span>
             </div>
           </div>
           <div className="mb-4">
@@ -100,10 +99,6 @@ const Signup = () => {
                 onChange={handleChange}
                 className="mt-1 p-2 w-full border rounded-md"
               />
-              <span
-                id="email-error-box"
-                className="absolute bottom-0 left-0"
-              ></span>
             </div>
           </div>
           <div className="mb-4">
@@ -117,7 +112,6 @@ const Signup = () => {
                 onChange={handleChange}
                 className="mt-1 p-2 w-full border rounded-md"
               />
-              <span id="password-error-box"></span>
             </div>
           </div>
           <button

@@ -12,8 +12,8 @@ const generateToken = (userId) => {
   return jwt.sign({ id: userId }, getJwtSecret());
 };
 
-const handleExistingUser = () => {
-  const error = new Error("User or email already exists");
+const handleExistingUser = (message) => {
+  const error = new Error(message);
   error.status = 400;
   throw error;
 };
@@ -30,7 +30,7 @@ const signUp = async (req, res, next) => {
     // Check if the username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      handleExistingUser();
+      handleExistingUser("Username or Email already exists");
     }
 
     // Password hashing with bcrypt
@@ -55,7 +55,7 @@ const signIn = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
 
     if (!existingUser || !bcrypt.compareSync(password, existingUser.password)) {
-      handleExistingUser();
+      handleExistingUser("Wrong Email or Password");
     }
 
     const token = generateToken(existingUser._id);
