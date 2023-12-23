@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 const Signin = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,15 +34,16 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+    dispatch(signInStart());
     if (!isEmailValid(formData.email)) {
       handleInvalidInput("Invalid email address");
       return;
     }
 
     if (!isPasswordValid(formData.password)) {
-      handleInvalidInput("Password must be at least 8 characters long");
+      handleInvalidInput(
+        "Password must be at least 8 characters long, have atleat one uppercase, one lowewrcase and a special character"
+      );
       return;
     }
 
@@ -52,24 +59,19 @@ const Signin = () => {
       const data = await response.json();
 
       if (data.success === false) {
-        setErrorMessage(data.message);
-        setLoading(false);
+        dispatch(signInFailure(data.message));
         return;
       }
 
-      setLoading(false);
-      setErrorMessage("");
+      dispatch(signInSuccess(data));
       navigate("/home");
     } catch (error) {
-      console.error("Error during sign-in:", error);
-      setLoading(false);
-      setErrorMessage("An error occurred during sign-in. Please try again.");
+      dispatch(signInFailure(error.message));
     }
   };
 
   const handleInvalidInput = (message) => {
-    alert(message);
-    setLoading(false);
+    dispatch(signInFailure(message));
   };
 
   return (
@@ -119,10 +121,8 @@ const Signin = () => {
             </Link>
           </p>
         </div>
-        {errorMessage && (
-          <p className="text-sm text-center text-red-500 mt-5">
-            {errorMessage}
-          </p>
+        {error && (
+          <p className="text-sm text-center text-red-500 mt-5">{error}</p>
         )}
       </div>
     </div>
