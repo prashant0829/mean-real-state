@@ -18,6 +18,12 @@ const handleExistingUser = (message) => {
   throw error;
 };
 
+const generatePassword = () => {
+  return (
+    Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
+  );
+};
+
 const signUp = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -74,7 +80,45 @@ const signIn = async (req, res, next) => {
   }
 };
 
+const google = async (req, res, next) => {
+  const { email, photo } = req.body;
+  try {
+    let existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      const generatedPassword = generatePassword();
+      const hashedPassword = bcrypt.hashSync(generatedPassword, saltRounds);
+      const username = email.split("@")[0];
+
+      const newUser = new User({
+        username,
+        email,
+        password: hashedPassword,
+        avatar: photo,
+      });
+
+      // Save the user to the database
+      existingUser = await newUser.save();
+    }
+
+    const token = generateToken(existingUser._id);
+
+    const { password: userPassword, ...userDetails } = existingUser._doc;
+
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60),
+      })
+      .status(200)
+      .json(userDetails);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
+  google,
 };

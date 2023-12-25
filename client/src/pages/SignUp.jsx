@@ -1,6 +1,8 @@
 // Signup.js
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -74,7 +76,7 @@ const Signup = () => {
     <div className="py-2 flex items-center justify-center">
       <div className="bg-blur-lg bg-white bg-opacity-30 p-10 rounded-md max-w-md w-full">
         <h1 className="text-3xl text-center font-semibold mb-6">Signup</h1>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="mb-4">
             <div className="flex flex-col">
               <input
@@ -116,17 +118,19 @@ const Signup = () => {
           </div>
           <button
             type="submit"
-            className="bg-gray-500 w-full text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+            onSubmit={handleSubmit}
+            className="bg-gray-500 w-full text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 mb-4"
             disabled={loading}
           >
             {loading ? "Loading..." : "Sign Up"}
           </button>
+          <OAuth isSignUpPage={true} setSignUpErrorMessage={setErrorMessage} />
         </form>
         {/* Already have an account section */}
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-500 hover:underline">
+            <Link to="/signin" className="text-blue-500 hover:underline">
               Log in here
             </Link>
           </p>

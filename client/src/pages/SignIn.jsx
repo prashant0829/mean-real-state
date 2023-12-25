@@ -6,6 +6,7 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 const Signin = () => {
   const [formData, setFormData] = useState({
@@ -78,7 +79,7 @@ const Signin = () => {
     <div className="py-2 flex items-center justify-center">
       <div className="bg-blur-lg bg-white bg-opacity-30 p-10 rounded-md max-w-md w-full">
         <h1 className="text-3xl text-center font-semibold mb-6">Sign In</h1>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="mb-4">
             <div className="flex flex-col relative">
               <input
@@ -107,11 +108,13 @@ const Signin = () => {
           </div>
           <button
             type="submit"
-            className="bg-gray-500 w-full text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+            onClick={handleSubmit}
+            className="bg-gray-500 w-full text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 mb-4"
             disabled={loading}
           >
             {loading ? "Loading..." : "Sign In"}
           </button>
+          <OAuth isSignUpPage={false} />
         </form>
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
