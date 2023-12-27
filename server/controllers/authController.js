@@ -31,7 +31,7 @@ const signUp = async (req, res, next) => {
     // Check if the username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      createError(400, "Username or Email already exists");
+      throw createError(400, "Username or Email already exists");
     }
 
     // Password hashing with bcrypt
@@ -56,7 +56,7 @@ const signIn = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
 
     if (!existingUser || !bcrypt.compareSync(password, existingUser.password)) {
-      createError(400, "Wrong Email or Password");
+      throw createError(400, "Wrong Email or Password");
     }
 
     const token = generateToken(existingUser._id);

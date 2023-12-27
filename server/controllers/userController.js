@@ -2,7 +2,8 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const { errorHandler, createError } = require("../utils/errorHandler");
 const bcrypt = require("bcryptjs");
-const constants = require("../utils/constants");
+
+const saltRounds = 10;
 
 const updateUser = async (req, res, next) => {
   try {
@@ -16,8 +17,7 @@ const updateUser = async (req, res, next) => {
     const updatedFields = {};
 
     if (password) {
-      console.log(constants.saltRounds);
-      updatedFields.password = bcrypt.hashSync(password, constants.saltRounds);
+      updatedFields.password = bcrypt.hashSync(password, saltRounds);
     }
 
     const updatedUser = await User.findByIdAndUpdate(
