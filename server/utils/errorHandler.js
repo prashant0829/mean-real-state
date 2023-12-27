@@ -8,4 +8,10 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-module.exports = { errorHandler };
+const createError = (status, message) => {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+};
+
+module.exports = { errorHandler, createError };

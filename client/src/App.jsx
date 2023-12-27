@@ -5,7 +5,6 @@ import PrivateRoute from "./components/PrivateRoute";
 const App = () => {
   return (
     <div className="bg-gray-50 h-screen">
-      {" "}
       <BrowserRouter className="">
         <Header />
         <Routes>

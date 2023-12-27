@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
-const { errorHandler } = require("./errorHandler");
+const { errorHandler } = require("./utils/errorHandler");
+const cookieParser = require("cookie-parser");
 
 // configurations
 dotenv.config();
@@ -29,6 +30,7 @@ expressApp.listen(3000, () => {
 
 // middlewares
 expressApp.use(express.json());
+expressApp.use(cookieParser());
 
 // routes
 expressApp.use("/api/user", userRouter);

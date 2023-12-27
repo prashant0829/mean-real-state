@@ -1,21 +1,16 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const { errorHandler } = require("../errorHandler");
+const { createError } = require("../utils/errorHandler");
 
 const saltRounds = 10;
 
 const getJwtSecret = () => {
   return process.env.JWT_SECRET;
 };
+
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, getJwtSecret());
-};
-
-const handleExistingUser = (message) => {
-  const error = new Error(message);
-  error.status = 400;
-  throw error;
 };
 
 const generatePassword = () => {
@@ -36,7 +31,7 @@ const signUp = async (req, res, next) => {
     // Check if the username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
-      handleExistingUser("Username or Email already exists");
+      createError(400, "Username or Email already exists");
     }
 
     // Password hashing with bcrypt
@@ -61,7 +56,7 @@ const signIn = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
 
     if (!existingUser || !bcrypt.compareSync(password, existingUser.password)) {
-      handleExistingUser("Wrong Email or Password");
+      createError(400, "Wrong Email or Password");
     }
 
     const token = generateToken(existingUser._id);
