@@ -1,9 +1,17 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-const { errorHandler, createError } = require("../utils/errorHandler");
+const { createError } = require("../utils/errorHandler");
 const bcrypt = require("bcryptjs");
 
 const saltRounds = 10;
+
+const getJwtSecret = () => {
+  return process.env.JWT_SECRET;
+};
+
+const generateToken = (userId) => {
+  return jwt.sign({ id: userId }, getJwtSecret());
+};
 
 const updateUser = async (req, res, next) => {
   try {
@@ -26,9 +34,17 @@ const updateUser = async (req, res, next) => {
       { new: true }
     );
 
+    const token = generateToken(updatedUser._id);
+
     const { password: userPassword, ...rest } = updatedUser._doc;
 
-    res.status(200).json(rest);
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60),
+      })
+      .status(200)
+      .json(rest);
   } catch (error) {
     next(error);
   }
