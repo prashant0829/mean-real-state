@@ -182,14 +182,16 @@ const Profile = () => {
           defaultValue={currentUser.username}
           onChange={handleChange}
         />
-        <input
-          type="email"
-          placeholder="email"
-          className="border p-3 rounded-lg"
-          id="email"
-          defaultValue={currentUser.email}
-          onChange={handleChange}
-        />
+        {!currentUser.oAuthUser && (
+          <input
+            type="email"
+            placeholder="email"
+            className="border p-3 rounded-lg"
+            id="email"
+            defaultValue={currentUser.email}
+            onChange={handleChange}
+          />
+        )}
         <input
           type="text"
           placeholder="password"

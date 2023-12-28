@@ -90,6 +90,7 @@ const google = async (req, res, next) => {
         email,
         password: hashedPassword,
         avatar: photo,
+        oAuthUser: true,
       });
 
       // Save the user to the database

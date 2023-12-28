@@ -118,7 +118,7 @@ const Signup = () => {
           </div>
           <button
             type="submit"
-            onSubmit={handleSubmit}
+            onClick={handleSubmit}
             className="bg-gray-500 w-full text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 mb-4"
             disabled={loading}
           >
