@@ -17,11 +17,12 @@ import { useDispatch } from "react-redux";
 
 const Profile = () => {
   const fileRef = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [fileUploadPercentage, setFileUploadPercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -66,8 +67,38 @@ const Profile = () => {
     );
   };
 
+  const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    console.log(email, emailRegex.test(email));
+    return emailRegex.test(email);
+  };
+
+  const isPasswordValid = (password) => {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const handleInvalidInput = (message) => {
+    dispatch(updateUserFailure(message));
+    setUpdateSuccess(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.email && !isEmailValid(formData.email)) {
+      handleInvalidInput("Invalid email address");
+      return;
+    }
+
+    if (formData.password && !isPasswordValid(formData.password)) {
+      handleInvalidInput(
+        "Password must be at least 8 characters long, have atleat one uppercase, one lowewrcase and a special character"
+      );
+      return;
+    }
+
     try {
       dispatch(updateUserStart());
       const res = await fetch(`api/user/update/${currentUser._id}`, {
@@ -81,11 +112,15 @@ const Profile = () => {
       console.log(data);
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
+        setUpdateSuccess(false);
+
         return;
       }
       dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+      setUpdateSuccess(false);
     }
   };
   // firebase storage rule
@@ -164,16 +199,22 @@ const Profile = () => {
         />
         <button
           onClick={handleSubmit}
+          disabled={loading}
           className="bg-slate-700 text-white rounded-lg p-3 hover:opacity-90 disabled:opacity-80"
         >
-          Update
+          {loading ? "Updating User..." : "Update"}
         </button>
-        <div className="flex justify-between mt-5">
-          <span className="text-red-700 cursor-pointer">Delete</span>
-
-          <span className="text-red-700 cursor-pointer">Sign Out</span>
-        </div>
       </form>
+      <div className="flex justify-between mt-5">
+        <span className="text-red-700 cursor-pointer">Delete</span>
+        <span className="text-red-700 cursor-pointer">Sign Out</span>
+      </div>
+      <div className="text-small text-center">
+        <p className="text-red-700 mt-5">{error ? error : ""}</p>
+        <p className="text-green-700 mt-5">
+          {updateSuccess ? "Sucessfully Updated" : ""}
+        </p>
+      </div>
     </div>
   );
 };

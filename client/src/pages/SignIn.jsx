@@ -33,6 +33,10 @@ const Signin = () => {
     return passwordRegex.test(password);
   };
 
+  const handleInvalidInput = (message) => {
+    dispatch(signInFailure(message));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(signInStart());
@@ -69,10 +73,6 @@ const Signin = () => {
     } catch (error) {
       dispatch(signInFailure(error.message));
     }
-  };
-
-  const handleInvalidInput = (message) => {
-    dispatch(signInFailure(message));
   };
 
   return (
