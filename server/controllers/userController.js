@@ -50,4 +50,22 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { updateUser };
+const deleteUser = async (req, res, next) => {
+  const { id } = req.params;
+  const { password, username, email, avatar } = req.body;
+
+  try {
+    if (req.user.id !== id) {
+      throw createError(401, "Unauthorized to delete the account");
+    }
+    await User.findByIdAndDelete(req.params.id);
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json("User has been deleted successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { updateUser, deleteUser };
