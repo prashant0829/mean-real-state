@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Home, SignIn, SignUp, About, Profile, Header } from "./imports";
 import PrivateRoute from "./components/PrivateRoute";
+import CreateListing from "./pages/CreateListing";
 
 const App = () => {
   return (
@@ -10,12 +11,9 @@ const App = () => {
         <Routes>
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
             <Route path="/about" element={<About />} />
+            <Route path="/create-listing" element={<CreateListing />} />
           </Route>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
