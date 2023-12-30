@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const CreateListing = () => {
   return (
-    <main className="p-3 max-w-4xl mx-auto">
+    <main className="p-2 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
         Create a Listing
       </h1>
@@ -11,7 +11,7 @@ const CreateListing = () => {
           <input
             type="text"
             placeholder="Name"
-            className="border p-3 rounded-lg"
+            className="border p-2 rounded-lg"
             id="name"
             maxLength="62"
             minLength="10"
@@ -20,14 +20,14 @@ const CreateListing = () => {
           <input
             type="text"
             placeholder="Description"
-            className="border p-3 rounded-lg"
+            className="border p-2 rounded-lg"
             id="description"
             required
           />
           <input
             type="text"
             placeholder="Address"
-            className="border p-3 rounded-lg"
+            className="border p-2 rounded-lg"
             id="address"
             required
           />
@@ -138,7 +138,7 @@ const CreateListing = () => {
               Upload
             </button>
           </div>
-          <button className="p-3 bg-slate-700 text-white rounded-lg hover:opacity-95">
+          <button className="p-2 bg-slate-700 text-white rounded-lg hover:opacity-95">
             Create Listing
           </button>
         </div>
