@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
+const listingRouter = require("./routes/listingRouter");
 const { errorHandler } = require("./utils/errorHandler");
 const cookieParser = require("cookie-parser");
 
@@ -35,4 +36,5 @@ expressApp.use(cookieParser());
 // routes
 expressApp.use("/api/user", userRouter);
 expressApp.use("/api/auth", authRouter);
+expressApp.use("/api/listing", listingRouter);
 expressApp.use(errorHandler);
